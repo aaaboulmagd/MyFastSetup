@@ -4,7 +4,7 @@ $SubID = "03d13178-3e31-454d-9bdd-9e93bc53828a"
 
 $MyRG = "myResourceGroup"
 $MyAKSCluster = "myAKSCluster"
-$MyAppRepoOption1 = "https://github.com/aaaboulmagd/WebAppForDemos/toarcwithcd/webappfordemo.yml" #"https://raw.githubusercontent.com/aaaboulmagd/AzaksTest/main/webappfordemo.yml"
+$MyAppRepoOption1 = "https://raw.githubusercontent.com/aaaboulmagd/AzaksTest/main/webappfordemo.yml" #"https://github.com/aaaboulmagd/WebAppForDemos/toarcwithcd/webappfordemo.yml" #"https://raw.githubusercontent.com/aaaboulmagd/AzaksTest/main/webappfordemo.yml"
 $MyAppRepoConfigLoc = "https://github.com/aaaboulmagd/WebAppForDemos.git"
 
 #---Get on the right subscription
@@ -20,6 +20,7 @@ az aks create --resource-group $MyRG --name $MyAKSCluster --node-count 1 --enabl
 
 #---Get Credentials so you can manipulate the env
 az aks get-credentials --resource-group $MyRG --name $MyAKSCluster
+#$temp = az aks get-credentials --resource-group cppe-pod04 --name cppe-dev-egteam
 
 #---Option 1 Deploy an app
 kubectl apply -f $MyAppRepoOption1
