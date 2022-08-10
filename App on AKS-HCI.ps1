@@ -11,6 +11,10 @@ $MyAppRepoConfigLoc = "https://github.com/aaaboulmagd/WebAppForDemos.git"
 Get-AzContext #check subscription 
 Select-AzSubscription -SubscriptionId $SubID
 
+#--- Create new cluster 
+New-AksHciCluster -name $MyAKSCluster -nodePoolName linuxnodepool -nodeCount 1 -osType Linux
+
+#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 #---create Resorce Group
 az group create --name $MyRG --location westeurope
 
