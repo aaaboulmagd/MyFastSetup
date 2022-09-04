@@ -3,7 +3,7 @@ $SubName = "Azure Hybrid Demo Creation"
 $SubID = "03d13178-3e31-454d-9bdd-9e93bc53828a"
 
 $MyRG = "myResourceGroup"
-$MyAKSCluster = "myAKSCluster"
+$MyAKSCluster = "my_aks_cluster"
 $MyAppRepoOption1 = "https://raw.githubusercontent.com/aaaboulmagd/AzaksTest/main/webappfordemo.yml" #"https://github.com/aaaboulmagd/WebAppForDemos/toarcwithcd/webappfordemo.yml" #"https://raw.githubusercontent.com/aaaboulmagd/AzaksTest/main/webappfordemo.yml"
 $MyAppRepoConfigLoc = "https://github.com/aaaboulmagd/WebAppForDemos.git"
 
@@ -13,6 +13,19 @@ Select-AzSubscription -SubscriptionId $SubID
 
 #--- Create new cluster 
 New-AksHciCluster -name $MyAKSCluster -nodePoolName linuxnodepool -nodeCount 1 -osType Linux
+
+#--- Create new node pool
+New-AksHciNodePool -ClusterName $MyAKSCluster
+
+#---Get Credentials so you can manipulate the env
+Get-AksHciCredential -Name $MyAKSCluster
+
+#---Option 1 Deploy an app
+kubectl apply -f $MyAppRepoOption1
+
+#---Option 2 Deploy an app
+#kubectl apply -f https://raw.githubusercontent.com/aaaboulmagd/AzaksTest/main/Azure-Vote.yaml
+
 
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 #---create Resorce Group
