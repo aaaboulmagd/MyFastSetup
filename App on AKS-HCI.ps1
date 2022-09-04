@@ -3,10 +3,14 @@ $SubName = "Azure Hybrid Demo Creation"
 $SubID = "03d13178-3e31-454d-9bdd-9e93bc53828a"
 
 $MyRG = "myResourceGroup"
+$MGRG = "cppe-pod04aks-wcus"
 $MyAKSCluster = "my_aks_cluster"
 $MyAppRepoOption1 = "https://raw.githubusercontent.com/aaaboulmagd/AzaksTest/main/webappfordemo.yml" #"https://github.com/aaaboulmagd/WebAppForDemos/toarcwithcd/webappfordemo.yml" #"https://raw.githubusercontent.com/aaaboulmagd/AzaksTest/main/webappfordemo.yml"
-$MyAppRepoConfigLoc = "https://github.com/aaaboulmagd/WebAppForDemos.git"
+$MyInfraRepo_Vote = "https://github.com/aaaboulmagd/InfraForDemos.git"
+$MyInfraFile_Vote = "https://raw.githubusercontent.com/aaaboulmagd/InfraForDemos/NewStructure/Azure%20Vote%20app/Azure-Vote.yaml"
 
+$MyAppRepoConfigLoc = "https://github.com/aaaboulmagd/WebAppForDemos.git"
+$MyFluxConfig = "my-flux-config"
 #---Get on the right subscription
 Get-AzContext #check subscription 
 Select-AzSubscription -SubscriptionId $SubID
@@ -21,10 +25,28 @@ New-AksHciNodePool -ClusterName $MyAKSCluster
 Get-AksHciCredential -Name $MyAKSCluster
 
 #---Option 1 Deploy an app
-kubectl apply -f $MyAppRepoOption1
+#kubectl apply -f $MyAppRepoOption1
 
 #---Option 2 Deploy an app
-#kubectl apply -f https://raw.githubusercontent.com/aaaboulmagd/AzaksTest/main/Azure-Vote.yaml
+kubectl apply -f https://raw.githubusercontent.com/aaaboulmagd/InfraForDemos/NewStructure/Azure%20Vote%20app/Azure-Vote.yaml
+
+#---get the IP so you can see it in the browser 
+kubectl get service #options -> <<name if servuce>> 
+
+#********Needed For First time *******
+#--- install Azure CLI if needed
+$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
+
+az provider register --namespace Microsoft.Kubernetes
+az provider register --namespace Microsoft.ContainerService
+az provider register --namespace Microsoft.KubernetesConfiguration
+
+az extension add -n k8s-configuration
+az extension add -n k8s-extension
+#*************************************
+
+#--- configuring Flux #-t "managedClusters" for AKS clusters connectedClusters for Arc
+az k8s-configuration flux create -g $MGRG -c $MyAKSCluster -n $MyFluxConfig --namespace flux-cluster-config -t connectedClusters --scope cluster -u $MyInfraRepo_Vote --branch NewStructure --interval 5s --kustomization name=infra path="./Azure Vote app" prune=true interval=15s
 
 
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
