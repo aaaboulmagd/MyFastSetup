@@ -36,17 +36,17 @@ kubectl get service #options -> <<name if servuce>>
 #********Needed For First time *******
 #--- install Azure CLI if needed
 $ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
-
+#--- Register Providers 
 az provider register --namespace Microsoft.Kubernetes
 az provider register --namespace Microsoft.ContainerService
 az provider register --namespace Microsoft.KubernetesConfiguration
-
+#--- Add Extentions 
 az extension add -n k8s-configuration
 az extension add -n k8s-extension
 #*************************************
 
 #--- configuring Flux #-t "managedClusters" for AKS clusters connectedClusters for Arc
-az k8s-configuration flux create -g $MGRG -c $MyAKSCluster -n $MyFluxConfig --namespace flux-cluster-config -t connectedClusters --scope cluster -u $MyInfraRepo_Vote --branch NewStructure --interval 5s --kustomization name=infra path="./AzureVoteApp" prune=true interval=15s
+az k8s-configuration flux create -g $MGRG -c $MyAKSCluster -n $MyFluxConfig --namespace flux-cluster-config -t connectedClusters --scope cluster -u $MyInfraRepo_Vote --branch NewStructure --interval 5s --kustomization name=infra path="./AzureVoteApp" prune=true
 
 
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
