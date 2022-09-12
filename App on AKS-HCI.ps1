@@ -46,7 +46,17 @@ az extension add -n k8s-extension
 #*************************************
 
 #--- configuring Flux #-t "managedClusters" for AKS clusters connectedClusters for Arc
-az k8s-configuration flux create -g $MGRG -c $MyAKSCluster -n $MyFluxConfig --namespace flux-cluster-config -t connectedClusters --scope cluster -u $MyInfraRepo_Vote --branch NewStructure --interval 5s --kustomization name=infra path="./AzureVoteApp" prune=true
+az k8s-configuration flux create -n $MyFluxConfig -g $MGRG /
+-c $MyAKSCluster /
+--namespace flux-cluster-config /
+-t connectedClusters /
+--scope cluster /
+-u $MyInfraRepo_Vote /
+--branch NewStructure /
+--interval 5s /
+--kustomization / 
+name=VoteApp-CD path="./AzureVoteApp" /
+prune=true
 
 
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
